@@ -321,3 +321,37 @@ document.getElementById('jobForm').addEventListener('submit', function(e) {
 </script>
 </body>
 </html>
+<script>
+// document.getElementById('previewButton').addEventListener('click', function(e) {
+    e.preventDefault();
+    const formData = new FormData(document.getElementById('jobForm'));
+    const teaserData = Object.fromEntries(formData);
+    showPreview(teaserData);
+});
+
+function showPreview(data) {
+    const previewHtml = `
+        <div id="preview">
+            <h2>${data.jobTitle}</h2>
+            <p>${data.companyName} - ${data.location}</p>
+            <button id="editButton">Edit</button>
+            <button id="saveButton">Save Teaser</button>
+        </div>
+    `;
+    document.body.innerHTML = previewHtml;
+
+    document.getElementById('editButton').addEventListener('click', function() {
+        location.reload();
+    });
+
+    document.getElementById('saveButton').addEventListener('click', function() {
+        let teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+        teasers.push(data);
+        localStorage.setItem('jobTeasers', JSON.stringify(teasers));
+        alert('Teaser saved successfully!');
+        window.location.href = 'teaser-list.html';
+    });
+}
+</script>
+</body>
+</html>
