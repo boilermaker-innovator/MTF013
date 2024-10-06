@@ -344,5 +344,18 @@ document.addEventListener('DOMContentLoaded', function() {
     // Keep your existing generateTeaserHTML, generateCardHTML, and initTabs functions
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var viewTeaserListBtn = document.getElementById('viewTeaserListBtn');
+    if (viewTeaserListBtn) {
+        viewTeaserListBtn.addEventListener('click', function() {
+            window.location.href = 'teaser-list.html';
+        });
+    }
+
+    // Add other existing JavaScript functions here
+    // For example, your form submission, preview, and save functions
+});
+</script>
 </body>
 </html>
