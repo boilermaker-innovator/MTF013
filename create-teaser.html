@@ -321,37 +321,31 @@ document.getElementById('jobForm').addEventListener('submit', function(e) {
 </script>
 </body>
 </html>
-<script>
-document.getElementById('jobForm').addEventListener('submit', function(e) {
-    e.preventDefault(); // Prevent form submission
-    const formData = new FormData(this);
-    const teaserData = Object.fromEntries(formData);
-    showPreview(teaserData);
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+    
+    var form = document.getElementById('jobForm');
+    if(form) {
+        console.log('Form found');
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Form submitted');
+            
+            var formData = new FormData(this);
+            var teaserData = Object.fromEntries(formData);
+            
+            console.log('Teaser data:', teaserData);
+            
+            var teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+            teasers.push(teaserData);
+            localStorage.setItem('jobTeasers', JSON.stringify(teasers));
+            
+            console.log('Teaser saved');
+            alert('Teaser saved successfully!');
+        });
+    } else {
+        console.error('Form not found');
+    }
 });
-
-function showPreview(data) {
-    const previewHtml = `
-        <div id="preview">
-            <h2>${data.jobTitle}</h2>
-            <p>${data.companyName} - ${data.location}</p>
-            <button id="editButton">Edit</button>
-            <button id="saveButton">Save Job Teaser</button>
-        </div>
-    `;
-    document.body.innerHTML = previewHtml;
-
-    document.getElementById('editButton').addEventListener('click', function() {
-        location.reload(); // This will reload the form with previous data
-    });
-
-    document.getElementById('saveButton').addEventListener('click', function() {
-        let teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-        teasers.push(data);
-        localStorage.setItem('jobTeasers', JSON.stringify(teasers));
-        alert('Teaser saved successfully!');
-        window.location.href = 'teaser-list.html';
-    });
-}
-</script>
 </body>
 </html>
