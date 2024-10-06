@@ -145,7 +145,7 @@
 
         <div class="button-group">
             <button type="button" id="previewButton" class="preview-button">Preview Teaser</button>
-            <button type="submit" class="create-button">Create Teaser</button>
+            <button type="button" id="createTeaserBtn" class="create-button">Create Teaser</button>
             <button type="button" class="fill-test-button" id="fillTest">Fill Test Data</button>
             <button type="button" class="clear-button" id="clearForm">Clear Form</button>
         </div>
@@ -292,45 +292,23 @@
 </body>
 </html>
 <script>
-document.getElementById('jobForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const formData = new FormData(this);
-    const teaserData = Object.fromEntries(formData);
-    
-    console.log('Form data:', teaserData);
-    
-    let teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-    teasers.push(teaserData);
-    
-    localStorage.setItem('jobTeasers', JSON.stringify(teasers));
-    
-    console.log('Teasers saved:', teasers);
-    
-    alert('Teaser saved successfully!');
-    
-    window.location.href = 'teaser-list.html';
-});
-</script>
-</body>
-</html>
-<script>
 document.addEventListener('DOMContentLoaded', function() {
     var form = document.getElementById('jobForm');
-    var previewButton = document.getElementById('previewButton');
+    var createTeaserBtn = document.getElementById('createTeaserBtn');
     var teaserPreview = document.getElementById('teaserPreview');
     var teaserCard = document.getElementById('teaserCard');
 
-    if(form && previewButton && teaserPreview) {
-        previewButton.addEventListener('click', function(e) {
+    if(form && createTeaserBtn && teaserPreview) {
+        createTeaserBtn.addEventListener('click', function(e) {
             e.preventDefault();
             var formData = new FormData(form);
             showPreview(formData);
         });
 
-        form.addEventListener('submit', function(e) {
+        // Remove any form submit event listeners
+        form.onsubmit = function(e) {
             e.preventDefault();
-            // Prevent automatic submission
-        });
+        };
     } else {
         console.error('One or more required elements not found');
     }
@@ -358,7 +336,8 @@ document.addEventListener('DOMContentLoaded', function() {
         teasers.push(data);
         localStorage.setItem('jobTeasers', JSON.stringify(teasers));
         alert('Teaser saved successfully!');
-        window.location.href = 'teaser-list.html';
+        // Uncomment the next line if you want to redirect after saving
+        // window.location.href = 'teaser-list.html';
     }
 
     // Keep your existing generateTeaserHTML, generateCardHTML, and initTabs functions
