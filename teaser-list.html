@@ -1,1 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Teaser List</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Job Teaser List</h1>
+    <a href="create-teaser.html" class="create-button">Create New Teaser</a>
+    <div id="teaserList"></div>
 
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const teaserList = document.getElementById('teaserList');
+        const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+
+        teasers.forEach(teaser => {
+            const teaserCard = document.createElement('div');
+            teaserCard.className = 'teaser-card';
+            teaserCard.innerHTML = `
+                <h2>${teaser.jobTitle}</h2>
+                <p>${teaser.companyName} - ${teaser.location}</p>
+            `;
+            teaserList.appendChild(teaserCard);
+        });
+    });
+    </script>
+</body>
+</html>
