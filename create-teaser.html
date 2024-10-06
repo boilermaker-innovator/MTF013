@@ -291,21 +291,22 @@
 </body>
 </html>
 <script>
-// document.getElementById('jobForm').addEventListener('submit', function(e) {
+document.getElementById('jobForm').addEventListener('submit', function(e) {
     e.preventDefault();
     const formData = new FormData(this);
     const teaserData = Object.fromEntries(formData);
     
-    // Get existing teasers or initialize empty array
-    let teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+    console.log('Form data:', teaserData);
     
-    // Add new teaser
+    let teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
     teasers.push(teaserData);
     
-    // Save updated teasers
     localStorage.setItem('jobTeasers', JSON.stringify(teasers));
     
-    // Redirect to list page
+    console.log('Teasers saved:', teasers);
+    
+    alert('Teaser saved successfully!');
+    
     window.location.href = 'teaser-list.html';
 });
 </script>
