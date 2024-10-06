@@ -1,1 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Teaser Creator</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            max-width: 800px; 
+            margin: 0 auto; 
+            position: relative;
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+        body::before,
+        body::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: #00A0E9;
+        }
+        body::before { top: 0; }
+        body::after { bottom: 0; }
+        form { background-color: #f0f0f0; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; box-sizing: border-box; }
+        textarea { height: 100px; }
+        #jobAdInput { height: 200px; }
+        .button-group { display: flex; justify-content: space-between; margin-top: 20px; flex-wrap: wrap; }
+        button { padding: 10px 15px; cursor: pointer; font-size: 16px; margin: 5px; }
+        .create-button { background-color: #00A0E9; color: white; border: none; }
+        .clear-button { background-color: #f44336; color: white; border: none; }
+        .fill-test-button { background-color: #4CAF50; color: white; border: none; }
+        #teaserPreview, #teaserCard { border: 4px solid #00A0E9; border-radius: 8px; overflow: hidden; margin-bottom: 20px; }
+        .job-teaser { background-color: white; overflow: hidden; }
+        .job-header {
+            background-color: #00A0E9;
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .job-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+            margin-right: 20px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 5px;
+        }
+        .job-title { margin: 0; font-size: 24px; }
+        .job-company-location { margin-top: 5px; font-size: 16px; }
+        .tabs { display: flex; background-color: #f0f0f0; }
+        .tab {
+            flex-grow: 1;
+            padding: 10px;
+            text-align: center;
+            background-color: #e0e0e0;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .tab.active { background-color: white; font-weight: bold; }
+        .tab-content { padding: 20px; display: none; }
+        .tab-content.active { display: block; }
+        .apply-button {
+            display: block;
+            width: 100%;
+            padding: 15px 0;
+            background-color: #00A0E9;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+        }
+        .apply-button:hover { background-color: #0078b0; }
+        #teaserCard .job-description { padding: 20px; }
+        #teaserCard h3 { color: #00A0E9; }
+        .back-button {
+            background-color: #f0f0f0;
+            border: none;
+            padding: 10px 15px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #00A0E9;
+        }
+        .back-button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Job Teaser Creator</h1>
+    <form id="jobForm">
+        <label for="jobAdInput">Paste Job Ad Content:</label>
+        <textarea id="jobAdInput" name="jobAdInput"></textarea>
 
+        <label for="companyName">Company Name:</label>
+        <input type="text" id="companyName" name="companyName" required>
+
+        <label for="jobTitle">Job Title:</label>
+        <input type="text" id="jobTitle" name="jobTitle" required>
+
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required>
+
+        <label for="logoUrl">Logo URL:</label>
+        <input type="url" id="logoUrl" name="logoUrl" required>
+
+        <label for="tab1Title">Tab 1 Title:</label>
+        <input type="text" id="tab1Title" name="tab1Title" required>
+
+        <label for="tab1Content">Tab 1 Content:</label>
+        <textarea id="tab1Content" name="tab1Content" required></textarea>
+
+        <label for="tab2Title">Tab 2 Title:</label>
+        <input type="text" id="tab2Title" name="tab2Title" required>
+
+        <label for="tab2Content">Tab 2 Content:</label>
+        <textarea id="tab2Content" name="tab2Content" required></textarea>
+
+        <label for="tab3Title">Tab 3 Title:</label>
+        <input type="text" id="tab3Title" name="tab3Title" required>
+
+        <label for="tab3Content">Tab 3 Content:</label>
+        <textarea id="tab3Content" name="tab3Content" required></textarea>
+
+        <label for="tab4Title">Tab 4 Title:</label>
+        <input type="text" id="tab4Title" name="tab4Title" required>
+
+        <label for="tab4Content">Tab 4 Content:</label>
+        <textarea id="tab4Content" name="tab4Content" required></textarea>
+
+        <label for="applyUrl">Apply URL:</label>
+        <input type="url" id="applyUrl" name="applyUrl" required>
+
+        <div class="button-group">
+            <button type="submit" class="create-button">Create Teaser</button>
+            <button type="button" class="fill-test-button" id="fillTest">Fill Test Data</button>
+            <button type="button" class="clear-button" id="clearForm">Clear Form</button>
+        </div>
+    </form>
+
+    <div id="teaserPreview"></div>
+    <div id="teaserCard" style="display: none;"></div>
+
+    <script>
+        document.getElementById('jobForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            document.getElementById('teaserPreview').innerHTML = generateTeaserHTML(formData);
+            document.getElementById('teaserCard').innerHTML = generateCardHTML(formData);
+            initTabs();
+        });
+
+        document.getElementById('clearForm').addEventListener('click', function() {
+            document.getElementById('jobForm').reset();
+            document.getElementById('teaserPreview').innerHTML = '';
+            document.getElementById('teaserCard').innerHTML = '';
+        });
+
+        document.getElementById('fillTest').addEventListener('click', function() {
+            const testData = {
+                jobAdInput: "TechCorp is seeking a talented Software Engineer to join our innovative team in San Francisco.",
+                companyName: "TechCorp",
+                jobTitle: "Software Engineer",
+                location: "San Francisco, CA",
+                logoUrl: "https://example.com/company-logo.png",
+                tab1Title: "About",
+                tab1Content: "Join our dynamic team at TechCorp, where innovation meets opportunity.",
+                tab2Title: "Role",
+                tab2Content: "Develop and maintain high-quality software.",
+                tab3Title: "You",
+                tab3Content: "Bachelor's degree in Computer Science or related field.",
+                tab4Title: "Benefits",
+                tab4Content: "Competitive salary and equity package.",
+                applyUrl: "https://techcorp.com/careers"
+            };
+            
+            for (const [key, value] of Object.entries(testData)) {
+                const element = document.getElementById(key);
+                if (element) element.value = value;
+            }
+        });
+
+        function generateTeaserHTML(formData) {
+            const tabs = [
+                { title: formData.get('tab1Title'), content: formData.get('tab1Content') },
+                { title: formData.get('tab2Title'), content: formData.get('tab2Content') },
+                { title: formData.get('tab3Title'), content: formData.get('tab3Content') },
+                { title: formData.get('tab4Title'), content: formData.get('tab4Content') }
+            ];
+
+            return `
+                <div class="job-teaser">
+                    <div class="job-header">
+                        <img src="${formData.get('logoUrl')}" alt="${formData.get('companyName')} Logo" class="job-logo">
+                        <div>
+                            <h2 class="job-title">${formData.get('jobTitle')}</h2>
+                            <div class="job-company-location">${formData.get('companyName')} - ${formData.get('location')}</div>
+                        </div>
+                    </div>
+                    <div class="tabs">
+                        ${tabs.map((tab, index) => `
+                            <div class="tab ${index === 0 ? 'active' : ''}" data-tab="tab${index + 1}">${tab.title}</div>
+                        `).join('')}
+                    </div>
+                    ${tabs.map((tab, index) => `
+                        <div id="tab${index + 1}" class="tab-content ${index === 0 ? 'active' : ''}">
+                            <p>${tab.content.replace(/\n/g, '<br>')}</p>
+                        </div>
+                    `).join('')}
+                    <a href="#" class="apply-button" onclick="showCard()">Learn More</a>
+                </div>
+            `;
+        }
+
+        function generateCardHTML(formData) {
+            return `
+                <div class="job-teaser">
+                    <button onclick="showTeaser()" class="back-button">← Back to Teaser</button>
+                    <div class="job-header">
+                        <img src="${formData.get('logoUrl')}" alt="${formData.get('companyName')} Logo" class="job-logo">
+                        <div>
+                            <h2 class="job-title">${formData.get('jobTitle')}</h2>
+                            <div class="job-company-location">${formData.get('companyName')} - ${formData.get('location')}</div>
+                        </div>
+                    </div>
+                    <div class="job-description">
+                        <h3>${formData.get('tab1Title')}</h3>
+                        <p>${formData.get('tab1Content').replace(/\n/g, '<br>')}</p>
+                        <h3>${formData.get('tab2Title')}</h3>
+                        <p>${formData.get('tab2Content').replace(/\n/g, '<br>')}</p>
+                        <h3>${formData.get('tab3Title')}</h3>
+                        <p>${formData.get('tab3Content').replace(/\n/g, '<br>')}</p>
+                        <h3>${formData.get('tab4Title')}</h3>
+                        <p>${formData.get('tab4Content').replace(/\n/g, '<br>')}</p>
+                    </div>
+                    <a href="${formData.get('applyUrl')}" class="apply-button" target="_blank">Apply Now</a>
+                </div>
+            `;
+        }
+
+        function initTabs() {
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            let currentTab = 0;
+            const tabDuration = 2000; // 2 seconds per tab
+
+            function showTab(index) {
+                tabs.forEach(tab => tab.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                tabs[index].classList.add('active');
+                tabContents[index].classList.add('active');
+            }
+
+            function nextTab() {
+                currentTab = (currentTab + 1) % tabs.length;
+                showTab(currentTab);
+            }
+
+            showTab(0); // Show the first tab immediately
+            setInterval(nextTab, tabDuration);
+        }
+
+        document.getElementById('teaserPreview').addEventListener('click', function(e) {
+            if (e.target.classList.contains('tab')) {
+                showCard();
+            }
+        });
+
+        function showCard() {
+            document.getElementById('teaserPreview').style.display = 'none';
+            document.getElementById('teaserCard').style.display = 'block';
+        }
+
+        function showTeaser() {
+            document.getElementById('teaserPreview').style.display = 'block';
+            document.getElementById('teaserCard').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
