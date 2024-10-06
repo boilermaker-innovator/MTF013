@@ -322,9 +322,9 @@ document.getElementById('jobForm').addEventListener('submit', function(e) {
 </body>
 </html>
 <script>
-document.getElementById('previewButton').addEventListener('click', function(e) {
-    e.preventDefault();
-    const formData = new FormData(document.getElementById('jobForm'));
+document.getElementById('jobForm').addEventListener('submit', function(e) {
+    e.preventDefault(); // Prevent form submission
+    const formData = new FormData(this);
     const teaserData = Object.fromEntries(formData);
     showPreview(teaserData);
 });
@@ -341,15 +341,7 @@ function showPreview(data) {
     document.body.innerHTML = previewHtml;
 
     document.getElementById('editButton').addEventListener('click', function() {
-        // This will return to the form with the data intact
-        document.body.innerHTML = document.getElementById('jobForm').outerHTML;
-        // Re-attach the preview button event listener
-        document.getElementById('previewButton').addEventListener('click', function(e) {
-            e.preventDefault();
-            const formData = new FormData(document.getElementById('jobForm'));
-            const teaserData = Object.fromEntries(formData);
-            showPreview(teaserData);
-        });
+        location.reload(); // This will reload the form with previous data
     });
 
     document.getElementById('saveButton').addEventListener('click', function() {
