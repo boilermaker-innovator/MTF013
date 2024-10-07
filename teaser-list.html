@@ -1,9 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- ... (keep the existing head content) ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Teaser List</title>
     <style>
-        /* ... (keep the existing styles) ... */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .teaser-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .teaser-item {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #0056b3;
+            width: 80%;
+            max-width: 600px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        .tab button.active {
+            background-color: #ccc;
+        }
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
         .delete-btn {
             background-color: #ff4444;
             color: white;
@@ -24,7 +95,23 @@
     <a href="create-teaser.html" class="create-link">Create New Job Teaser</a>
     <div id="teaserGrid" class="teaser-grid"></div>
 
-    <!-- ... (keep the existing modal HTML) ... -->
+    <div id="teaserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalJobTitle"></h2>
+            <p id="modalCompanyLocation"></p>
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'basicInfo')">Basic Info</button>
+                <button class="tablinks" onclick="openTab(event, 'fullJobAd')">Full Job Ad</button>
+            </div>
+            <div id="basicInfo" class="tabcontent">
+                <p id="modalBasicInfo"></p>
+            </div>
+            <div id="fullJobAd" class="tabcontent">
+                <p id="modalFullJobAd"></p>
+            </div>
+        </div>
+    </div>
 
     <script>
         function loadTeasers() {
@@ -53,7 +140,34 @@
             loadTeasers(); // Refresh the list
         }
 
-        // ... (keep the existing openModal and openTab functions) ...
+        function openModal(teaser) {
+            const modal = document.getElementById('teaserModal');
+            document.getElementById('modalJobTitle').textContent = teaser.jobTitle;
+            document.getElementById('modalCompanyLocation').textContent = `${teaser.companyName} - ${teaser.location}`;
+            document.getElementById('modalBasicInfo').textContent = teaser.basicInfo || 'No basic info available.';
+            document.getElementById('modalFullJobAd').textContent = teaser.fullJobAd || 'No full job ad available.';
+            modal.style.display = "block";
+            openTab(null, 'basicInfo');
+        }
+
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            if (evt) evt.currentTarget.className += " active";
+        }
+
+        // Close the modal
+        document.getElementsByClassName("close")[0].onclick = function() {
+            document.getElementById('teaserModal').style.display = "none";
+        }
 
         // Load teasers when the page loads
         loadTeasers();
