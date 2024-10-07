@@ -101,6 +101,15 @@
 <body>
     <h1>Job Teaser Creator</h1>
     <a href="teaser-list.html" class="view-list-button">View Job Teaser List</a>
+    <div id="templateControls">
+    <label for="templateSelect">Choose a template:</label>
+    <select id="templateSelect">
+        <option value="">Select a template</option>
+    </select>
+    <button id="loadTemplate">Load Template</button>
+    <button id="saveTemplate">Save as New Template</button>
+    <p class="help-text">Select a template to quickly fill the form, or save your current entries as a new template.</p>
+</div>
     <form id="jobForm">
         <label for="jobAdInput">Paste Job Ad Content:</label>
         <textarea id="jobAdInput" name="jobAdInput"></textarea>
