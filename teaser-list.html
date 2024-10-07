@@ -11,81 +11,138 @@
             padding: 20px;
             background-color: #f0f8ff;
         }
-        .teaser-card {
+        .teaser-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        .teaser-item {
             background-color: white;
-            border: 2px solid #0056b3;
+            border: 1px solid #ddd;
             border-radius: 8px;
-            margin-bottom: 20px;
-            overflow: hidden;
+            padding: 15px;
+            cursor: pointer;
         }
-        .teaser-header {
-            background-color: #0056b3;
-            color: white;
-            padding: 10px;
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
         }
-        .tabs {
-            display: flex;
-            background-color: #e0e0e0;
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #0056b3;
+            width: 80%;
+            max-width: 600px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
         }
         .tab {
-            padding: 10px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
             cursor: pointer;
-            border-right: 1px solid #ccc;
-            flex-grow: 1;
-            text-align: center;
+            padding: 14px 16px;
+            transition: 0.3s;
         }
-        .tab:last-child {
-            border-right: none;
+        .tab button:hover {
+            background-color: #ddd;
         }
-        .tab-content {
-            padding: 15px;
+        .tab button.active {
+            background-color: #ccc;
+        }
+        .tabcontent {
             display: none;
-        }
-        .tab-content.active {
-            display: block;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
         }
     </style>
 </head>
 <body>
     <h1>Job Teaser List</h1>
-    <div id="teaserList">
-        <!-- Job teasers will be dynamically added here -->
+    <div id="teaserGrid" class="teaser-grid"></div>
+
+    <div id="teaserModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalJobTitle"></h2>
+            <p id="modalCompanyLocation"></p>
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'basicInfo')">Basic Info</button>
+                <button class="tablinks" onclick="openTab(event, 'fullJobAd')">Full Job Ad</button>
+            </div>
+            <div id="basicInfo" class="tabcontent">
+                <p id="modalBasicInfo"></p>
+            </div>
+            <div id="fullJobAd" class="tabcontent">
+                <p id="modalFullJobAd"></p>
+            </div>
+        </div>
     </div>
 
     <script>
         function loadTeasers() {
-            const teaserList = document.getElementById('teaserList');
+            const teaserGrid = document.getElementById('teaserGrid');
             const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
 
             teasers.forEach((teaser, index) => {
-                const teaserCard = document.createElement('div');
-                teaserCard.className = 'teaser-card';
-                teaserCard.innerHTML = `
-                    <div class="teaser-header">
-                        <h2>${teaser.jobTitle}</h2>
-                        <p>${teaser.companyName} - ${teaser.location}</p>
-                    </div>
-                    <div class="tabs">
-                        <div class="tab" onclick="openTab(event, 'tab1-${index}')">Tab 1</div>
-                        <div class="tab" onclick="openTab(event, 'tab2-${index}')">Tab 2</div>
-                        <div class="tab" onclick="openTab(event, 'tab3-${index}')">Tab 3</div>
-                        <div class="tab" onclick="openTab(event, 'tab4-${index}')">Tab 4</div>
-                    </div>
-                    <div id="tab1-${index}" class="tab-content active">${teaser.tab1Content}</div>
-                    <div id="tab2-${index}" class="tab-content">${teaser.tab2Content}</div>
-                    <div id="tab3-${index}" class="tab-content">${teaser.tab3Content}</div>
-                    <div id="tab4-${index}" class="tab-content">${teaser.tab4Content}</div>
+                const teaserItem = document.createElement('div');
+                teaserItem.className = 'teaser-item';
+                teaserItem.innerHTML = `
+                    <h3>${teaser.jobTitle}</h3>
+                    <p>${teaser.companyName} - ${teaser.location}</p>
                 `;
-                teaserList.appendChild(teaserCard);
+                teaserItem.onclick = () => openModal(teaser);
+                teaserGrid.appendChild(teaserItem);
             });
         }
 
+        function openModal(teaser) {
+            const modal = document.getElementById('teaserModal');
+            document.getElementById('modalJobTitle').textContent = teaser.jobTitle;
+            document.getElementById('modalCompanyLocation').textContent = `${teaser.companyName} - ${teaser.location}`;
+            document.getElementById('modalBasicInfo').textContent = teaser.basicInfo || 'No basic info available.';
+            document.getElementById('modalFullJobAd').textContent = teaser.fullJobAd || 'No full job ad available.';
+            modal.style.display = "block";
+            openTab(null, 'basicInfo');
+        }
+
         function openTab(evt, tabName) {
-            const tabContents = evt.currentTarget.parentElement.parentElement.getElementsByClassName("tab-content");
-            for (let i = 0; i < tabContents.length; i++) {
-                tabContents[i].className = tabContents[i].className.replace(" active", "");
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
             }
-            document.getElementById(tabName).className += " active";
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            if (evt) evt.currentTarget.className += " active";
+        }
+
+        // Close the modal
+        document.getElementsByClassName("close")[0].onclick = function() {
+            document.getElementById('teaserModal').style.display = "none";
         }
 
         // Load teasers when the page loads
