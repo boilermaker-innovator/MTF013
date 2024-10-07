@@ -360,5 +360,23 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
     console.log('Saved job teasers:', JSON.parse(localStorage.getItem('jobTeasers')));
 </script>
+<div id="debugInfo" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;">
+    <h3>Debug Information:</h3>
+    <pre id="savedData"></pre>
+</div>
+
+<script>
+    function updateDebugInfo() {
+        const savedData = localStorage.getItem('jobTeasers');
+        document.getElementById('savedData').textContent = savedData ? savedData : 'No data saved yet';
+    }
+    
+    // Call this function after saving a new teaser
+    // Add this line at the end of your form submission handler
+    updateDebugInfo();
+    
+    // Also call it when the page loads
+    updateDebugInfo();
+</script>
 </body>
 </html>
