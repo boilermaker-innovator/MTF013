@@ -9,29 +9,68 @@
 <body>
     <h1>Job Teaser List</h1>
     <a href="create-teaser.html" class="create-button">Create New Teaser</a>
+    <input type="text" id="searchInput" placeholder="Search jobs...">
     <div id="teaserGrid" class="teaser-grid"></div>
-
+    <div id="teaserDetails" class="teaser-details"></div>
+    
     <script>
     document.addEventListener('DOMContentLoaded', function() {
         const teaserGrid = document.getElementById('teaserGrid');
         const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+        const searchInput = document.getElementById('searchInput');
 
-        teasers.forEach((teaser, index) => {
-            const teaserCard = document.createElement('div');
-            teaserCard.className = 'teaser-card';
-            teaserCard.innerHTML = `
-                <img src="${teaser.logoUrl}" alt="${teaser.companyName} logo" class="company-logo">
-                <h2>${teaser.jobTitle}</h2>
-                <p>${teaser.companyName} - ${teaser.location}</p>
-                <button onclick="viewDetails(${index})">View Details</button>
-            `;
-            teaserGrid.appendChild(teaserCard);
+        function renderTeasers(teasersToRender) {
+            teaserGrid.innerHTML = '';
+            if (teasersToRender.length === 0) {
+                teaserGrid.innerHTML = '<p>No job teasers found.</p>';
+                return;
+            }
+            teasersToRender.forEach((teaser, index) => {
+                const teaserCard = document.createElement('div');
+                teaserCard.className = 'teaser-card';
+                teaserCard.innerHTML = `
+                    <img src="${teaser.logoUrl}" alt="${teaser.companyName} logo" class="company-logo">
+                    <h2>${teaser.jobTitle}</h2>
+                    <p>${teaser.companyName} - ${teaser.location}</p>
+                    <button onclick="viewDetails(${index})">View Details</button>
+                `;
+                teaserGrid.appendChild(teaserCard);
+            });
+        }
+
+        renderTeasers(teasers);
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            const filteredTeasers = teasers.filter(teaser => 
+                teaser.jobTitle.toLowerCase().includes(searchTerm) ||
+                teaser.companyName.toLowerCase().includes(searchTerm) ||
+                teaser.location.toLowerCase().includes(searchTerm)
+            );
+            renderTeasers(filteredTeasers);
         });
     });
 
     function viewDetails(index) {
-        // We'll implement this function later
-        console.log('View details for teaser at index:', index);
+        const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+        const teaser = teasers[index];
+        const detailsDiv = document.getElementById('teaserDetails');
+        detailsDiv.innerHTML = `
+            <h2>${teaser.jobTitle}</h2>
+            <p><strong>Company:</strong> ${teaser.companyName}</p>
+            <p><strong>Location:</strong> ${teaser.location}</p>
+            <p><strong>About:</strong> ${teaser.tab1Content}</p>
+            <p><strong>Role:</strong> ${teaser.tab2Content}</p>
+            <p><strong>Requirements:</strong> ${teaser.tab3Content}</p>
+            <p><strong>Details:</strong> ${teaser.tab4Content}</p>
+            <a href="${teaser.applyUrl}" target="_blank" class="apply-button">Apply Now</a>
+            <button onclick="closeDetails()">Close</button>
+        `;
+        detailsDiv.style.display = 'block';
+    }
+
+    function closeDetails() {
+        document.getElementById('teaserDetails').style.display = 'none';
     }
     </script>
 </body>
