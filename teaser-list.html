@@ -4,74 +4,92 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Teaser List</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .teaser-card {
+            background-color: white;
+            border: 2px solid #0056b3;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .teaser-header {
+            background-color: #0056b3;
+            color: white;
+            padding: 10px;
+        }
+        .tabs {
+            display: flex;
+            background-color: #e0e0e0;
+        }
+        .tab {
+            padding: 10px;
+            cursor: pointer;
+            border-right: 1px solid #ccc;
+            flex-grow: 1;
+            text-align: center;
+        }
+        .tab:last-child {
+            border-right: none;
+        }
+        .tab-content {
+            padding: 15px;
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <h1>Job Teaser List</h1>
-    <a href="create-teaser.html" class="create-button">Create New Teaser</a>
-    <input type="text" id="searchInput" placeholder="Search jobs...">
-    <div id="teaserGrid" class="teaser-grid"></div>
-    <div id="teaserDetails" class="teaser-details"></div>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const teaserGrid = document.getElementById('teaserGrid');
-        const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-        const searchInput = document.getElementById('searchInput');
+    <div id="teaserList">
+        <!-- Job teasers will be dynamically added here -->
+    </div>
 
-        function renderTeasers(teasersToRender) {
-            teaserGrid.innerHTML = '';
-            if (teasersToRender.length === 0) {
-                teaserGrid.innerHTML = '<p>No job teasers found.</p>';
-                return;
-            }
-            teasersToRender.forEach((teaser, index) => {
+    <script>
+        function loadTeasers() {
+            const teaserList = document.getElementById('teaserList');
+            const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+
+            teasers.forEach((teaser, index) => {
                 const teaserCard = document.createElement('div');
                 teaserCard.className = 'teaser-card';
                 teaserCard.innerHTML = `
-                    <img src="${teaser.logoUrl}" alt="${teaser.companyName} logo" class="company-logo">
-                    <h2>${teaser.jobTitle}</h2>
-                    <p>${teaser.companyName} - ${teaser.location}</p>
-                    <button onclick="viewDetails(${index})">View Details</button>
+                    <div class="teaser-header">
+                        <h2>${teaser.jobTitle}</h2>
+                        <p>${teaser.companyName} - ${teaser.location}</p>
+                    </div>
+                    <div class="tabs">
+                        <div class="tab" onclick="openTab(event, 'tab1-${index}')">Tab 1</div>
+                        <div class="tab" onclick="openTab(event, 'tab2-${index}')">Tab 2</div>
+                        <div class="tab" onclick="openTab(event, 'tab3-${index}')">Tab 3</div>
+                        <div class="tab" onclick="openTab(event, 'tab4-${index}')">Tab 4</div>
+                    </div>
+                    <div id="tab1-${index}" class="tab-content active">${teaser.tab1Content}</div>
+                    <div id="tab2-${index}" class="tab-content">${teaser.tab2Content}</div>
+                    <div id="tab3-${index}" class="tab-content">${teaser.tab3Content}</div>
+                    <div id="tab4-${index}" class="tab-content">${teaser.tab4Content}</div>
                 `;
-                teaserGrid.appendChild(teaserCard);
+                teaserList.appendChild(teaserCard);
             });
         }
 
-        renderTeasers(teasers);
+        function openTab(evt, tabName) {
+            const tabContents = evt.currentTarget.parentElement.parentElement.getElementsByClassName("tab-content");
+            for (let i = 0; i < tabContents.length; i++) {
+                tabContents[i].className = tabContents[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).className += " active";
+        }
 
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const filteredTeasers = teasers.filter(teaser => 
-                teaser.jobTitle.toLowerCase().includes(searchTerm) ||
-                teaser.companyName.toLowerCase().includes(searchTerm) ||
-                teaser.location.toLowerCase().includes(searchTerm)
-            );
-            renderTeasers(filteredTeasers);
-        });
-    });
-
-    function viewDetails(index) {
-        const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-        const teaser = teasers[index];
-        const detailsDiv = document.getElementById('teaserDetails');
-        detailsDiv.innerHTML = `
-            <h2>${teaser.jobTitle}</h2>
-            <p><strong>Company:</strong> ${teaser.companyName}</p>
-            <p><strong>Location:</strong> ${teaser.location}</p>
-            <p><strong>About:</strong> ${teaser.tab1Content}</p>
-            <p><strong>Role:</strong> ${teaser.tab2Content}</p>
-            <p><strong>Requirements:</strong> ${teaser.tab3Content}</p>
-            <p><strong>Details:</strong> ${teaser.tab4Content}</p>
-            <a href="${teaser.applyUrl}" target="_blank" class="apply-button">Apply Now</a>
-            <button onclick="closeDetails()">Close</button>
-        `;
-        detailsDiv.style.display = 'block';
-    }
-
-    function closeDetails() {
-        document.getElementById('teaserDetails').style.display = 'none';
-    }
+        // Load teasers when the page loads
+        loadTeasers();
     </script>
 </body>
 </html>
