@@ -121,17 +121,17 @@
     teaserGrid.innerHTML = ''; // Clear existing teasers
 
     teasers.forEach((teaser, index) => {
-        const teaserItem = document.createElement('div');
-        teaserItem.className = 'teaser-item';
-        teaserItem.innerHTML = `
-            <img src="${teaser.logoUrl}" alt="${teaser.companyName} Logo" style="max-width: 100px; max-height: 100px;">
-            <h3>${teaser.jobTitle}</h3>
-            <p>${teaser.companyName} - ${teaser.location}</p>
-            <button class="view-btn" onclick="openModal(${index})">View Details</button>
-            <button class="delete-btn" onclick="deleteTeaser(${index})">Delete</button>
-        `;
-        teaserGrid.appendChild(teaserItem);
-    });
+    const teaserItem = document.createElement('div');
+    teaserItem.className = 'teaser-item';
+    teaserItem.innerHTML = `
+        <img src="${teaser.logoUrl}" alt="${teaser.companyName} Logo" style="max-width: 100px; max-height: 100px;">
+        <h3>${teaser.jobTitle}</h3>
+        <p>${teaser.companyName} - ${teaser.location}</p>
+        <button onclick="viewTeaser(${index}, 'card')">View Card</button>
+        <button onclick="viewTeaser(${index}, 'teaser')">View Teaser</button>
+    `;
+    teaserGrid.appendChild(teaserItem);
+});
 }
 
         function deleteTeaser(index) {
