@@ -187,5 +187,22 @@
         // Load teasers when the page loads
         loadTeasers();
     </script>
+    <div id="teaserModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2 id="modalJobTitle"></h2>
+        <p id="modalCompanyLocation"></p>
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'basicInfo')">Basic Info</button>
+            <button class="tablinks" onclick="openTab(event, 'fullJobAd')">Full Job Ad</button>
+        </div>
+        <div id="basicInfo" class="tabcontent">
+            <p id="modalBasicInfo"></p>
+        </div>
+        <div id="fullJobAd" class="tabcontent">
+            <p id="modalFullJobAd"></p>
+        </div>
+    </div>
+</div>
 </body>
 </html>
