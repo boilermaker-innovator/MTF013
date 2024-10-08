@@ -75,14 +75,6 @@
             border: 1px solid #ccc;
             border-top: none;
         }
-        .delete-btn {
-            background-color: #ff4444;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
         .create-link {
             display: block;
             margin-bottom: 20px;
@@ -115,70 +107,42 @@
 
     <script>
         function loadTeasers() {
-            function viewTeaser(index, view) {
-    const teaser = teasers[index];
-    const modal = document.getElementById('teaserModal');
-    document.getElementById('modalJobTitle').textContent = teaser.jobTitle;
-    document.getElementById('modalCompanyLocation').textContent = `${teaser.companyName} - ${teaser.location}`;
-    if (view === 'card') {
-        document.getElementById('basicInfo').innerHTML = generateCardHTML(teaser);
-        openTab(null, 'basicInfo');
-    } else {
-        document.getElementById('fullJobAd').innerHTML = generateTeaserHTML(teaser);
-        openTab(null, 'fullJobAd');
-    }
-
-    modal.style.display = "block";
-}
-    const teaserGrid = document.getElementById('teaserGrid');
-    const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-
-    teaserGrid.innerHTML = ''; // Clear existing teasers
-
-    teasers.forEach((teaser, index) => {
-    const teaserItem = document.createElement('div');
-    teaserItem.className = 'teaser-item';
-    teaserItem.innerHTML = `
-        <img src="${teaser.logoUrl}" alt="${teaser.companyName} Logo" style="max-width: 100px; max-height: 100px;">
-        <h3>${teaser.jobTitle}</h3>
-        <p>${teaser.companyName} - ${teaser.location}</p>
-        <button onclick="viewTeaser(${index}, 'card')">View Card</button>
-        <button onclick="viewTeaser(${index}, 'teaser')">View Teaser</button>
-    `;
-    teaserGrid.appendChild(teaserItem);
-});
-}
-
-        function deleteTeaser(index) {
+            const teaserGrid = document.getElementById('teaserGrid');
             const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-            teasers.splice(index, 1);
-            localStorage.setItem('jobTeasers', JSON.stringify(teasers));
-            loadTeasers(); // Refresh the list
+
+            teaserGrid.innerHTML = ''; // Clear existing teasers
+
+            teasers.forEach((teaser, index) => {
+                const teaserItem = document.createElement('div');
+                teaserItem.className = 'teaser-item';
+                teaserItem.innerHTML = `
+                    <img src="${teaser.logoUrl}" alt="${teaser.companyName} Logo" style="max-width: 100px; max-height: 100px;">
+                    <h3>${teaser.jobTitle}</h3>
+                    <p>${teaser.companyName} - ${teaser.location}</p>
+                    <button onclick="viewTeaser(${index}, 'card')">View Card</button>
+                    <button onclick="viewTeaser(${index}, 'teaser')">View Teaser</button>
+                `;
+                teaserGrid.appendChild(teaserItem);
+            });
         }
 
-        function openModal(index) {
-    const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-    const teaser = teasers[index];
+        function viewTeaser(index, view) {
+            const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+            const teaser = teasers[index];
+            const modal = document.getElementById('teaserModal');
+            document.getElementById('modalJobTitle').textContent = teaser.jobTitle;
+            document.getElementById('modalCompanyLocation').textContent = `${teaser.companyName} - ${teaser.location}`;
+            
+            if (view === 'card') {
+                document.getElementById('basicInfo').innerHTML = generateCardHTML(teaser);
+                openTab(null, 'basicInfo');
+            } else {
+                document.getElementById('fullJobAd').innerHTML = generateTeaserHTML(teaser);
+                openTab(null, 'fullJobAd');
+            }
 
-    const modal = document.getElementById('teaserModal');
-    document.getElementById('modalJobTitle').textContent = teaser.jobTitle;
-    document.getElementById('modalCompanyLocation').textContent = `${teaser.companyName} - ${teaser.location}`;
-
-    document.getElementById('modalBasicInfo').innerHTML = `
-        <h3>${teaser.tab1Title}</h3>
-        <p>${teaser.tab1Content}</p>
-        <h3>${teaser.tab2Title}</h3>
-        <p>${teaser.tab2Content}</p>
-        <h3>${teaser.tab3Title}</h3>
-        <p>${teaser.tab3Content}</p>
-        <h3>${teaser.tab4Title}</h3>
-        <p>${teaser.tab4Content}</p>
-    `;
-
-    document.getElementById('modalFullJobAd').textContent = teaser.jobAdInput;
-
-    modal.style.display = "block";
-}
+            modal.style.display = "block";
+        }
 
         function openTab(evt, tabName) {
             var i, tabcontent, tablinks;
@@ -202,22 +166,5 @@
         // Load teasers when the page loads
         loadTeasers();
     </script>
-    <div id="teaserModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2 id="modalJobTitle"></h2>
-        <p id="modalCompanyLocation"></p>
-        <div class="tab">
-            <button class="tablinks" onclick="openTab(event, 'basicInfo')">Basic Info</button>
-            <button class="tablinks" onclick="openTab(event, 'fullJobAd')">Full Job Ad</button>
-        </div>
-        <div id="basicInfo" class="tabcontent">
-            <p id="modalBasicInfo"></p>
-        </div>
-        <div id="fullJobAd" class="tabcontent">
-            <p id="modalFullJobAd"></p>
-        </div>
-    </div>
-</div>
 </body>
 </html>
