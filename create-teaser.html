@@ -331,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
         saveButton.textContent = 'Save Teaser';
         saveButton.className = 'create-button';
         saveButton.addEventListener('click', function() {
-            saveTeaser(Object.fromEntries(formData));
+            saveTeaser();
         });
         teaserPreview.appendChild(saveButton);
         
@@ -362,7 +362,11 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'teaser-list.html';
         });
     }
-
+var saveTeaserBtn = document.getElementById('saveTeaserBtn');
+if (saveTeaserBtn) {
+    saveTeaserBtn.addEventListener('click', saveTeaser);
+}
+    
     // Add other existing JavaScript functions here
     // For example, your form submission, preview, and save functions
 });
