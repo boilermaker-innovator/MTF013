@@ -115,6 +115,21 @@
 
     <script>
         function loadTeasers() {
+            function viewTeaser(index, view) {
+    const teaser = teasers[index];
+    const modal = document.getElementById('teaserModal');
+    document.getElementById('modalJobTitle').textContent = teaser.jobTitle;
+    document.getElementById('modalCompanyLocation').textContent = `${teaser.companyName} - ${teaser.location}`;
+    if (view === 'card') {
+        document.getElementById('basicInfo').innerHTML = generateCardHTML(teaser);
+        openTab(null, 'basicInfo');
+    } else {
+        document.getElementById('fullJobAd').innerHTML = generateTeaserHTML(teaser);
+        openTab(null, 'fullJobAd');
+    }
+
+    modal.style.display = "block";
+}
     const teaserGrid = document.getElementById('teaserGrid');
     const teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
 
