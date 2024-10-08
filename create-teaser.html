@@ -339,28 +339,15 @@ document.addEventListener('DOMContentLoaded', function() {
         teaserCard.style.display = 'none';
     }
 
-    function saveTeaser(data) {
-    var teasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
-    teasers.push({
-        jobAdInput: data.jobAdInput,
-        companyName: data.companyName,
-        jobTitle: data.jobTitle,
-        location: data.location,
-        logoUrl: data.logoUrl,
-        tab1Title: data.tab1Title,
-        tab1Content: data.tab1Content,
-        tab2Title: data.tab2Title,
-        tab2Content: data.tab2Content,
-        tab3Title: data.tab3Title,
-        tab3Content: data.tab3Content,
-        tab4Title: data.tab4Title,
-        tab4Content: data.tab4Content,
-        applyUrl: data.applyUrl
-    });
-    localStorage.setItem('jobTeasers', JSON.stringify(teasers));
+    function saveTeaser() {
+    const formData = new FormData(document.getElementById('jobForm'));
+    const teaserData = Object.fromEntries(formData);
+    
+    let savedTeasers = JSON.parse(localStorage.getItem('jobTeasers')) || [];
+    savedTeasers.push(teaserData);
+    localStorage.setItem('jobTeasers', JSON.stringify(savedTeasers));
+    
     alert('Teaser saved successfully!');
-    // Optionally, redirect to the list page
-    // window.location.href = 'teaser-list.html';
 }
     
 
