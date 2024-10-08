@@ -153,8 +153,14 @@
     </form>
 
     <div id="teaserPreview"></div>
-    <div id="teaserCard" style="display: none;"></div>
-
+   <div id="jobDisplay">
+    <div id="jobCard" class="job-display-item">
+        <!-- Job Card content will be dynamically inserted here -->
+    </div>
+    <div id="jobTeaser" class="job-display-item">
+        <!-- Job Teaser content will be dynamically inserted here -->
+    </div>
+</div>
     <script>
         document.getElementById('jobForm').addEventListener('submit', function(e) {
             e.preventDefault();
